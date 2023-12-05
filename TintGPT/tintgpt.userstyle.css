@@ -1,0 +1,103 @@
+/* ==UserStyle==
+@name           TintGPT: Colorful ChatGPT Convos
+@version        1.0.0
+@author         m1kethai
+@description    Classy colorization of ChatGPT conversations
+@namespace      https://github.com/m1kethai/UserStyles/TintGPT
+@preprocessor   less
+@var select     tintColor "Tint Color" {
+	"Aged Sage": "#8da572",
+	"Akira": "#840000",
+	"Amaretto": "#ab6f60",
+	"Ancient Gold": "#b59410",
+	"Aztek": "#293432",
+	"Black Pearl": "#1e272c",
+	"Black Sabbath": "#220022",
+	"Blue Moss": "#5D737E",
+	"Cardamom": "#aaaa77",
+	"Caviar": "#292a2d",
+	"Cyber Grape": "#58427C",
+	"Cyprus": "#545a3e",
+	"Dark and Stormy*": "#353f51",
+	"Deep Jungle": "#1A2421",
+	"Deep Space": "#2D3142",
+	"Dusty Turquoise": "#5a8a89",
+	"Earl Grey": "#a6978a",
+	"Emerald": "#0f380f",
+	"FF06B5": "#FF06B5",
+	"Gameboy Teal": "#0ABFBC",
+	"Japanese Violet": "#5B3256",
+	"Lobster Bisque": "#FFDAB9",
+	"Obsidian Ash": "#343434",
+	"Purple Haze": "#807396",
+	"Raichu": "#fc8c2c",
+	"Sakura Bloom": "#ff7b9c",
+	"Sharp Indigo": "#48007c",
+	"Super Blue Lavender": "#5a5b9f",
+	"Tokyo Midnight": "#1a1a2e",
+}
+@var checkbox   hideAvatars "Hide Avatars" 0
+@var checkbox   mobileLayout "[Desktop Only] Mobile Message Layout on Desktop - Always show action buttons in a separate row below the text in ChatGPT responses (default behavior when 'Hide avatars' is active)" 0
+
+==/UserStyle== */
+@-moz-document domain("chat.openai.com") {
+
+	/* ===== Main Message Element ===== */
+	div.w-full {
+
+		/* ===== Colorize Mixin ===== */
+		.colorize(@darker: false) {
+			@defaultBg: if(@darker,
+				rgb(52, 53, 65),
+				rgb(68, 70, 84)
+			);
+			@customBg: if(@darker,
+				shade(
+					mix(@defaultBg, @tintColor, 70%),
+					30%
+				),
+				desaturate(
+					darken(
+						shade(
+							mix(@defaultBg, @tintColor, 45%),
+							10%
+						), 0%,
+					), 10%
+				)
+			);
+			background-color: @customBg !important;
+			background-image: linear-gradient(180deg,rgba(53,55,64,0), @customBg 58.85%) !important;
+		}
+
+		.dark {
+			/* ===== User Messages ===== */
+			&\:bg-gray-700:not(input[type="checkbox"]),
+			&\:bg-gray-800:not(&\:md\:bg-vert-dark-gradient) {
+				.colorize(@darker: true);
+			}
+
+			/* ===== ChatGPT Messages ===== */
+			.w-full.text-token-text-primary:nth-child(2n) {
+				.colorize;
+			}
+		}
+	}
+
+	/* ===== Sidebar Toggle ===== */
+	.bg-black.rounded-md {
+		max-width: 98%;
+		@tintColor: mix(black, @tintColor, 90%);
+		background-color: @tintColor !important;
+		box-shadow: inset 0 20px 40px 40px lighten(@tintColor, 1%);
+	}
+
+	/* ===== Footer/Disclaimer Area ===== */
+	&\:md\:bg-vert-dark-gradient {
+		@media (min-width: 768px) {
+			.colorize();
+			> div > span {
+				color: lighten(@tintColor, 65%) !important;
+			}
+		}
+	}
+}
